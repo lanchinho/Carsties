@@ -1,33 +1,61 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
 using SearchService.Models;
+using SearchService.RequestHelpers;
 
 namespace SearchService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SearchController : ControllerBase
+public class SearchController(ILogger<SearchController> logger) : ControllerBase
 {
-    private readonly ILogger<SearchController> _logger;
+	private readonly ILogger<SearchController> _logger = logger;
 
-    public SearchController(ILogger<SearchController> logger)
-    {
-        _logger = logger;
-    }
+	[HttpGet]
+	public async Task<IActionResult> SearchItems([FromQuery] SearchParams searchParams)
+	{
+		_logger.LogTrace("Início da requisição para o endpoint {searchItems}", nameof(SearchItems));
 
-    [HttpGet]
-    public async Task<IActionResult> SearchItems(string searchTerm)
-    {
-        var query = DB.Find<Item>();
-        query.Sort(x => x.Ascending(a => a.Make));
+		var query = DB.PagedSearch<Item, Item>();
+		if (!string.IsNullOrWhiteSpace(searchParams.Searchterm))
+			query.Match(Search.Full, searchParams.Searchterm).SortByTextScore();
 
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-            query.Match(Search.Full, searchTerm).SortByTextScore();
-        
-        var result = await query.ExecuteAsync();
-        if (result == null)
-            return NotFound("Items not found");
+		query = searchParams.OrderBy switch
+		{
+			"make" => query.Sort(x => x.Ascending(a => a.Make)),
+			"new" => query.Sort(x => x.Descending(a => a.CreatedAt)),
+			_ => query.Sort(x => x.Ascending(a => a.AuctionEnd))
+		};
 
-        return Ok(result);
-    }
+		query = searchParams.FilterBy switch
+		{
+			"finished" => query.Match(x => x.AuctionEnd < DateTime.UtcNow),
+			"endingSoon" => query.Match(x => x.AuctionEnd < DateTime.UtcNow.AddHours(6)
+				&& x.AuctionEnd > DateTime.UtcNow),
+			_ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
+		};
+
+		if (!string.IsNullOrEmpty(searchParams.Seller))
+			query.Match(x => x.Seller == searchParams.Seller);
+
+		if (!string.IsNullOrEmpty(searchParams.Winner))
+			query.Match(x => x.Winner == searchParams.Winner);
+
+		query
+			.PageNumber(searchParams.PageNumber)
+			.PageSize(searchParams.PageSize);
+
+		var result = await query.ExecuteAsync();
+		if (result.TotalCount == 0)
+			return NotFound("Items not found");
+
+		_logger.LogTrace("Fim da requisição");
+
+		return Ok(new
+		{
+			results = result.Results,
+			pageCount = result.PageCount,
+			totalCount = result.TotalCount
+		});
+	}
 }

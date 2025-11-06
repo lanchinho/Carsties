@@ -2,6 +2,7 @@ using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,17 +27,17 @@ public class AuctionsController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetAllAuctions()
+	public async Task<IActionResult> GetAllAuctions(string date)
 	{
-		var auctions = await _context.Auctions.AsNoTracking()
-			.Include(x => x.Item)
-			.OrderBy(x => x.Item.Make)
-			.ToListAsync();
+		var query = _context.Auctions
+				.AsNoTracking()
+				.OrderBy(x => x.Item.Make)
+				.AsQueryable();
 
-		if (auctions == null || auctions.Count == 0)
-			return NotFound("No auctions were found.");
+		if (!string.IsNullOrWhiteSpace(date))
+			query = query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
 
-		return Ok(_mapper.Map<List<AuctionDTO>>(auctions));
+		return Ok(await query.ProjectTo<AuctionDTO>(_mapper.ConfigurationProvider).ToListAsync());
 	}
 
 	[HttpGet("{id}")]
@@ -98,10 +99,10 @@ public class AuctionsController : ControllerBase
 
 		_context.Auctions.Remove(auction);
 		var result = await _context.SaveChangesAsync() > 0;
-		
+
 		if (!result) return BadRequest("Could not delete auction");
 
 		return Ok();
 	}
-		
+
 }
