@@ -47,7 +47,12 @@ public class SearchController(ILogger<SearchController> logger) : ControllerBase
 
 		var result = await query.ExecuteAsync();
 		if (result.TotalCount == 0)
-			return NotFound("Items not found");
+			return NotFound(new
+			{
+				result = new List<Item>(),
+				pageCount = 0,
+				totalCount = 0
+			});
 
 		_logger.LogTrace("Fim da requisição");
 
