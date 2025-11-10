@@ -60,7 +60,7 @@ export default function Filters() {
             <span className="uppercase text-sm text-gray-500 mr-2">Page size</span>
             <ButtonGroup outline>
                 {pageSizeButtons.map((value, index) =>(
-                    <Button
+                    <Button                        
                         key={index}
                         onClick={() => setParams({pageSize: value})}
                         color={`${pageSize === value ? 'red' : 'grey'}`}
