@@ -3,7 +3,7 @@ import Heading from "../components/Heading";
 import AuthTest from "./AuthTest";
 
 export default async function page() {
-    const session = await auth();
+    const session = await auth();    
   return (
     <div>
         <Heading title="Session dashboard" />

@@ -19,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({token, profile, account}){
         if(account && account.access_token){
-          token.accesToken = account.access_token;
+          token.accessToken = account.access_token;
         }
         if(profile){
             token.username = profile.preferred_username? profile.preferred_username : profile.username;
@@ -27,10 +27,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return token;
     },
     async session({session, token}){  
+      console.log(session);
         if(token){
             session.user.username = token.username
             session.accessToken = token.accessToken;
-        }        
+        }   
         return session;
     }
   }
