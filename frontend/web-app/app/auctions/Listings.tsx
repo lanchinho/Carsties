@@ -24,8 +24,7 @@ export default function Listings() {
     })));
     const setParams = useParamsStore(state => state.setParams);
     const url = qs.stringifyUrl({url: '', query: params}, {skipEmptyString: true})
-    console.log(url);
-
+    
     function setPageNumber(pageNumber: number){
         setParams({pageNumber})
     }
@@ -41,7 +40,7 @@ export default function Listings() {
   return (
     <>
         <Filters />
-        {data.totalCount === 0 ? (
+        {!data.results ? (
             <EmptyFilter showReset/>
         ):(
           <>
