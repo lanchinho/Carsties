@@ -9,7 +9,7 @@
     <PackageVersion Include="Duende.IdentityServer.AspNetIdentity" Version="7.3.0" />
     <PackageVersion Include="MassTransit.EntityFrameworkCore" Version="8.5.5" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.5" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
