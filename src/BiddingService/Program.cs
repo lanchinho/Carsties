@@ -50,6 +50,7 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 builder.Services.AddHostedService<CheckAuctionFinished>();
+builder.Services.AddScoped<GrpcAuctionClient>();
 
 builder.Services.AddOpenApi();
 

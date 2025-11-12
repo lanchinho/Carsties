@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
+    <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="MassTransit.EntityFrameworkCore" />
     <PackageReference Include="MassTransit.RabbitMQ" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
@@ -23,5 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="protos/auctions.proto" GrpcServices="Server" />
   </ItemGroup>
 </Project>

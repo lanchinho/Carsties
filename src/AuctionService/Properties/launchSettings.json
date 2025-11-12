@@ -12,8 +12,7 @@
       "commandName": "WSL2",
       "launchUrl": "http://localhost:7001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:7001"
+        "ASPNETCORE_ENVIRONMENT": "Development"       
       },
       "distributionName": ""
     }
