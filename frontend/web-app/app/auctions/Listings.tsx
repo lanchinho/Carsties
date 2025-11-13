@@ -36,14 +36,13 @@ export default function Listings() {
     }
 
     useEffect(() => {
-        getData(url).then(data => {
+        getData(url).then(data => {            
             setData(data);
             setLoading(false);            
         })
     }, [url, setData]);
     
     if(loading) return <h3>Loading ... </h3>
-    console.log(data);
 
   return (
     <>

@@ -8,12 +8,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     id: "id-server",    
     clientId: "nextApp",
     clientSecret: "Secret",
-    issuer: "http://localhost:5001",
-    authorization: {params: {scope: "openid profile auctionApp"}},
+    issuer: process.env.ID_URL,
+    authorization: {
+      params: {scope: "openid profile auctionApp"},
+      url: `${process.env.ID_URL}/connect/authorize`
+    },
+    token: {
+      url: `${process.env.ID_URL_INTERNAL}/connect/token`
+
+    },
+    userinfo: {
+      url: `${process.env.ID_URL_INTERNAL}/connect/token`
+    },
     idToken: true
   } as OIDCConfig<Omit<Profile, "username">>),
   ],
   callbacks:{
+    async redirect({url, baseUrl}){
+      return url.startsWith(baseUrl) ? url : baseUrl
+
+    },
     async authorized({auth}){
         return !!auth;
     },
@@ -26,8 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         return token;
     },
-    async session({session, token}){  
-      console.log(session);
+    async session({session, token}){        
         if(token){
             session.user.username = token.username
             session.accessToken = token.accessToken;

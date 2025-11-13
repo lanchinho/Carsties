@@ -1,16 +1,14 @@
 import { auth } from "@/auth";
 
-const baseUrl = "http://localhost:6001/";
+const baseUrl = process.env.API_URL;
 
 async function get(url: string){
     const requestOptions ={
         method: "GET",
         headers: await getHeaders()
-    };
-
+    };    
     const response = await fetch(baseUrl + url, requestOptions);
     return handleResponse(response);
-
 }
 
 async function put(url: string, body: unknown){
@@ -48,7 +46,7 @@ async function handleResponse(response: Response) {
     let data;
 
     try {
-        data =  text && JSON.parse(text);
+        data =  text ? JSON.parse(text) : null;
     }catch {
         data = text;
     }    
@@ -60,6 +58,7 @@ async function handleResponse(response: Response) {
             status: response.status,
             message: typeof data === "string" ? data : response.statusText
         }
+        console.log({error});
         return {error}
     }
 }
