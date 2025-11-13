@@ -122,7 +122,18 @@ public class AuctionControllerTest
 	[Fact]
 	public async Task CreateAuction_FailedSave_Returns400BadRequest()
 	{
-		throw new NotImplementedException();
+		//Arrange	
+		var auction = _fixture.Create<CreateAuctionDto>();
+		_auctionRepo.Setup(repo => repo.AddAuction(It.IsAny<Auction>()));
+		_auctionRepo.Setup(repo => repo.SaveChangesAsync()).ReturnsAsync(false);
+
+		//Act
+		var result = await _controller.CreateAuction(auction) as BadRequestObjectResult;
+
+		//Assert
+		Assert.NotNull(result);
+		Assert.Equal(400, result.StatusCode);
+		Assert.Equal("Could not save changes to the DB", result.Value);
 	}
 
 	[Fact]
