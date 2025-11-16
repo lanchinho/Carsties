@@ -40,7 +40,7 @@ public class AuctionRepository : IAuctionRepository
 		return await _context.Auctions
 			.AsNoTracking()
 			.ProjectTo<AuctionDTO>(_mapper.ConfigurationProvider)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(x => x.Id == id);
 	}
 
 	public async Task<Auction> GetAuctionEntityById(Guid id)

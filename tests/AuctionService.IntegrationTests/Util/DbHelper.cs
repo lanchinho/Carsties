@@ -2,15 +2,15 @@
 using AuctionService.Entities;
 
 namespace AuctionService.IntegrationTests.Util;
-public static class DbHelper
+internal static class DbHelper
 {
-	public static void InitDbForTests(AuctionDbContext db)
+	internal static void InitDbForTests(AuctionDbContext db)
 	{
 		db.Auctions.AddRange(GetAuctionsForTest());
 		db.SaveChanges();
 	}
 
-	public static void ReinitDbForTests(AuctionDbContext db)
+	internal static void ReinitDbForTests(AuctionDbContext db)
 	{
 		db.Auctions.RemoveRange(db.Auctions);
 		db.SaveChanges();
