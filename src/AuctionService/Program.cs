@@ -19,7 +19,7 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
 
 builder.Services.AddAutoMapper(cfg =>
 {
-	cfg.LicenseKey = builder.Configuration["AutoMapperLicenseKey"];
+	cfg.LicenseKey = builder.Configuration["AutoMapperLicenseKey"] ?? string.Empty;
 	cfg.AddProfile<MappingProfiles>();
 
 });

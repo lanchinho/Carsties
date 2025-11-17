@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 *.env
 /devcerts
+/infra/devcerts
+/infra/k8s/secret.yml
